@@ -1,5 +1,5 @@
 <script setup>
-import { ref,onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import {
     IconCheckCircleOutline,
@@ -64,7 +64,7 @@ onMounted(() => {
                 <a href="https://flowbite.com" class="flex items-center justify-between mr-4">
                     <img src="/assets/logo.png" class="mr-3 h-8" alt="Flowbite Logo" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{{ appName
-                        }}</span>
+                    }}</span>
                 </a>
             </div>
             <div class="flex items-center lg:order-2">

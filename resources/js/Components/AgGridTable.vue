@@ -1,7 +1,14 @@
 <script setup>
-import { ref, computed, onMounted  } from "vue";
-import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import {
+    AllCommunityModule,
+    ModuleRegistry,
+    colorSchemeDarkBlue,
+    colorSchemeLightCold,
+    themeQuartz,
+} from 'ag-grid-community';
 import { AgGridVue } from "ag-grid-vue3";
+import UsernameRenderer from "./AGCellRenderer/UsernameRenderer.vue";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -12,7 +19,7 @@ const colDefs = ref([
     {
         headerName: "Account",
         children: [
-            { field: "name", headerName: "Name", checkboxSelection: true },
+            { field: "name", headerName: "Name", checkboxSelection: true, flex: 2, minWidth: 250, cellRenderer: UsernameRenderer },
             { field: "gender", headerName: "Gender" },
             { field: "ethnicity", headerName: "Ethnicity" },
             { field: "age", headerName: "Age" },
@@ -38,6 +45,10 @@ const colDefs = ref([
 // Global Search
 const gridApi = ref(null);
 const searchQuery = ref("");
+const agtheme = ref(themeQuartz.withPart(colorSchemeDarkBlue));
+
+const darkTheme = themeQuartz.withPart(colorSchemeDarkBlue)
+const lightTheme = themeQuartz.withPart(colorSchemeLightCold)
 
 const onGridReady = (params) => {
     gridApi.value = params.api;
@@ -54,18 +65,33 @@ const loadGridData = async () => {
 };
 
 // Load data when component is mounted
-onMounted(()=>{
+onMounted(() => {
     loadGridData()
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === "class") {
+                const htmlTag = document.documentElement;
+                if (htmlTag.classList.contains("dark")) {
+                    agtheme.value = darkTheme
+                } else {
+                    agtheme.value = lightTheme
+                }
+            }
+        });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    // Store observer reference to stop it later if needed
+    document.documentElement._darkModeObserver = observer;
+});
+
+onBeforeUnmount(() => {
+    document.documentElement._darkModeObserver?.disconnect();
 });
 </script>
 
 <template>
-    <AgGridVue
-        :rowData="rowData"
-        :columnDefs="colDefs"
-        class="w-full"
-        rowSelection="multiple"
-        :pagination="true"
-        :animateRows="true"
-        @grid-ready="onGridReady"></AgGridVue>
+    <AgGridVue :rowData="rowData" :columnDefs="colDefs" class="w-full" rowSelection="multiple" :pagination="true"
+        :animateRows="true" @grid-ready="onGridReady" :theme="agtheme"></AgGridVue>
 </template>
