@@ -13,8 +13,8 @@ import AgGridTable from '@/Components/AgGridTable.vue';
         </template>
 
         <div class="py-2">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <AgGridTable class="h-96" />
+            <div class="overflow-hidden">
+                <AgGridTable class="h-[90dvh]" />
             </div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
