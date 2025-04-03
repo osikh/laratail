@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { useDarkModeStore } from '@/Store/DarkMode';
 import { Head, Link, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Layout/Navbar.vue';
 import Sidebar from '@/Components/Layout/Sidebar.vue';
@@ -10,6 +11,8 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+
+const darkModeStore = useDarkModeStore()
 
 defineProps({
     title: String,
@@ -35,6 +38,8 @@ import { initFlowbite } from 'flowbite'
 // initialize components based on data attribute selectors
 onMounted(() => {
     initFlowbite();
+
+    darkModeStore.initiliaze()
 })
 </script>
 

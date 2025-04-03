@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useDarkModeStore } from '@/Store/DarkMode';
 import { Head, Link, router } from '@inertiajs/vue3';
 import {
     IconCheckCircleOutline,
@@ -11,10 +12,12 @@ import {
     IconMoonOutline
 } from '@iconify-prerendered/vue-flowbite';
 
+const darkModeStore = useDarkModeStore();
+
 const props = defineProps({
     user: Object,
 });
-const isDarkMode = ref(false);
+const isDarkMode = computed(() => darkModeStore.isDark ? true : false);
 
 const appName = import.meta.env.VITE_APP_NAME;
 
@@ -23,20 +26,10 @@ const logout = () => {
 };
 
 const toggleDarkMode = () => {
-    isDarkMode.value = !isDarkMode.value;
-    document.documentElement.classList.toggle("dark", isDarkMode.value);
-    localStorage.setItem("color-theme", isDarkMode.value ? "dark" : "light");
+    darkModeStore.setDarkMode(!isDarkMode.value)
 };
 
-onMounted(() => {
-    // Check if 'color-theme' exists in localStorage or match system preference
-    isDarkMode.value =
-        localStorage.getItem("color-theme") === "dark" ||
-        (!localStorage.getItem("color-theme") &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches);
-
-    document.documentElement.classList.toggle("dark", isDarkMode.value);
-});
+onMounted(() => {})
 </script>
 
 <template>

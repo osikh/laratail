@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useDarkModeStore } from "@/Store/DarkMode";
 import {
     IconPlusOutline,
     IconFilterOutline,
@@ -51,10 +52,12 @@ const colDefs = ref([
 // Global Search
 const gridApi = ref(null);
 const searchQuery = ref("");
-const agtheme = ref(themeQuartz.withPart(colorSchemeDarkBlue));
 
 const darkTheme = themeQuartz.withPart(colorSchemeDarkBlue)
 const lightTheme = themeQuartz.withPart(colorSchemeLightCold)
+
+const darkModeStore = useDarkModeStore()
+const agtheme = computed(() => darkModeStore.isDark ? darkTheme : lightTheme)
 
 const onGridReady = (params) => {
     gridApi.value = params.api;
@@ -73,27 +76,6 @@ const loadGridData = async () => {
 // Load data when component is mounted
 onMounted(() => {
     loadGridData()
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === "class") {
-                const htmlTag = document.documentElement;
-                if (htmlTag.classList.contains("dark")) {
-                    agtheme.value = darkTheme
-                } else {
-                    agtheme.value = lightTheme
-                }
-            }
-        });
-    });
-
-    observer.observe(document.documentElement, { attributes: true });
-
-    // Store observer reference to stop it later if needed
-    document.documentElement._darkModeObserver = observer;
-});
-
-onBeforeUnmount(() => {
-    document.documentElement._darkModeObserver?.disconnect();
 });
 </script>
 
